@@ -13,6 +13,11 @@ HUGO_BIND_ADDRESS          ?= 127.0.0.1
 BUILDER_CLI                := docker
 # BUILDER_CLI                := okteto
 LYCHEE_IMAGE_NAME          ?= lycheeverse/lychee:202105190720247e4977
+YQ_VERSION                 ?= v4.34.2
+
+REPO_ROOT := $(shell git rev-parse --show-toplevel)
+OS := $(shell uname -s | tr '[:upper:]' '[:lower:]')
+BIN_DIR := $(REPO_ROOT)/bin
 
 help:  ## Display this help menu.
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z_0-9-]+:.*?##/ { printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
@@ -21,10 +26,18 @@ help:  ## Display this help menu.
 prereqs:
 	npm install
 
-gen-content: ## Generates content from external sources.
+.PHONY: yq
+yq: $(BIN_DIR)/yq-$(YQ_VERSION)
+
+$(BIN_DIR)/yq-$(YQ_VERSION):
+	mkdir -p bin && wget https://github.com/mikefarah/yq/releases/download/$(YQ_VERSION)/yq_$(OS)_$(shell go env GOARCH) -O $(BIN_DIR)/yq-$(YQ_VERSION) && \
+	    chmod +x $(BIN_DIR)/yq-$(YQ_VERSION) && \
+	    cp $(BIN_DIR)/yq-$(YQ_VERSION) $(BIN_DIR)/yq
+
+gen-content: yq ## Generates content from external sources.
 	hack/gen-content.py
 	hack/import-calendar.py
-	hack/import-flux2-assets.sh
+	PATH=$(BIN_DIR):$(PATH) hack/import-flux2-assets.sh
 
 serve: gen-content prereqs ## Spawns a development server.
 	hugo server \
