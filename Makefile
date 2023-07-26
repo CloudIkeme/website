@@ -14,6 +14,7 @@ BUILDER_CLI                := docker
 # BUILDER_CLI                := okteto
 LYCHEE_IMAGE_NAME          ?= lycheeverse/lychee:202105190720247e4977
 YQ_VERSION                 ?= v4.34.2
+BRANCH                     ?= main
 
 REPO_ROOT := $(shell git rev-parse --show-toplevel)
 OS := $(shell uname -s | tr '[:upper:]' '[:lower:]')
@@ -76,7 +77,7 @@ docker-preview: docker-serve
 .PHONY: docker-serve
 docker-serve:
 	docker run -v $(shell pwd):/site -p 1313:1313 -it $(SUPPORT_IMAGE_NAME) \
-		make \"MAKEFLAGS=$(MAKEFLAGS)\" serve HUGO_BIND_ADDRESS=0.0.0.0
+		make \"MAKEFLAGS=$(MAKEFLAGS)\" serve HUGO_BIND_ADDRESS=0.0.0.0 GITHUB_TOKEN=$(GITHUB_TOKEN) BRANCH=$(BRANCH)
 
 .PHONY: docker-push docker-push-hugo docker-push-support
 docker-push: docker-push-hugo docker-push-support
