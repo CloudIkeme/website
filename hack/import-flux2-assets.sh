@@ -115,7 +115,7 @@ gen_crd_doc() {
 }
 
 function all_versions {
-  for crd in "$@" ; do
+  for crd in $1 ; do
     echo "${crd##*,}"
   done | sort | uniq
 }

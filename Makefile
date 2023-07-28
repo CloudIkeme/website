@@ -31,14 +31,14 @@ prereqs:
 yq: $(BIN_DIR)/yq-$(YQ_VERSION)
 
 $(BIN_DIR)/yq-$(YQ_VERSION):
-	mkdir -p bin && wget https://github.com/mikefarah/yq/releases/download/$(YQ_VERSION)/yq_$(OS)_$(shell go env GOARCH) -O $(BIN_DIR)/yq-$(YQ_VERSION) && \
+	mkdir -p $(BIN_DIR) && wget https://github.com/mikefarah/yq/releases/download/$(YQ_VERSION)/yq_$(OS)_$(shell go env GOARCH) -O $(BIN_DIR)/yq-$(YQ_VERSION) && \
 	    chmod +x $(BIN_DIR)/yq-$(YQ_VERSION) && \
 	    cp $(BIN_DIR)/yq-$(YQ_VERSION) $(BIN_DIR)/yq
 
 gen-content: yq ## Generates content from external sources.
 	hack/gen-content.py
 	hack/import-calendar.py
-	PATH=$(BIN_DIR):$(PATH) hack/import-flux2-assets.sh
+	PATH=$(BIN_DIR):$(PATH) BRANCH=$(BRANCH) hack/import-flux2-assets.sh
 
 serve: gen-content prereqs ## Spawns a development server.
 	hugo server \
