@@ -9,11 +9,6 @@ if [ -z "${GITHUB_USER:-}" ]; then
     GITHUB_USER=fluxcdbot
 fi
 
-if [ -z "${GITHUB_TOKEN:-}" ] ; then
-  echo "Please set GITHUB_TOKEN"
-  exit 1
-fi
-
 if [ ! "$(command -v jq)" ]; then
   echo "Please install 'jq'."
   exit 1

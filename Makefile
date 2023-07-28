@@ -26,6 +26,7 @@ help:  ## Display this help menu.
 
 prereqs:
 	npm install
+	python3 -m pip install -r requirements.txt
 
 .PHONY: yq
 yq: $(BIN_DIR)/yq-$(YQ_VERSION)
