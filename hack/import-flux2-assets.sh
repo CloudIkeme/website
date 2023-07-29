@@ -133,19 +133,19 @@ function gen_ctrl_docs {
   ctrl_version=$(echo "${ks_url}" | cut -d/ -f8)
 
   if [ "${ctrl}" = "helm-controller" ] ; then
-    ctrl_version=align-docs-layout # REVERT BEFORE MERGING
+    ctrl_version=main # REVERT BEFORE MERGING
   fi
 
   if [ "${ctrl}" = "kustomize-controller" ] ; then
-    ctrl_version=align-docs-layout # REVERT BEFORE MERGING
+    ctrl_version=main # REVERT BEFORE MERGING
   fi
 
   if [ "${ctrl}" = "notification-controller" ] ; then
-    ctrl_version=align-docs-layout # REVERT BEFORE MERGING
+    ctrl_version=main # REVERT BEFORE MERGING
   fi
 
   if [ "${ctrl_short%%-*}" = "image" ] ; then
-    ctrl_version=align-docs-layout # REVERT BEFORE MERGING
+    ctrl_version=main # REVERT BEFORE MERGING
   fi
 
   crds=$(curl -sL "${ks_url}" | yq ea '[[.metadata.name, .spec.versions[] | select(.storage == "true").name]]' -o csv)
