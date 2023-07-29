@@ -240,6 +240,6 @@ function gen_ctrl_docs {
   if [ ! -d static ]; then
     mkdir static
   fi
-  curl -u "$GITHUB_USER:$GITHUB_TOKEN" -s -# -Lf https://raw.githubusercontent.com/fluxcd/flux2/main/install/flux.sh -o static/install.sh
+  curl -u "$GITHUB_USER:$GITHUB_TOKEN" -s -# -Lf "https://raw.githubusercontent.com/fluxcd/flux2/v${VERSION_FLUX}/install/flux.sh" -o static/install.sh
 }
 
