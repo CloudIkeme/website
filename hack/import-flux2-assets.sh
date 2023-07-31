@@ -132,22 +132,6 @@ function gen_ctrl_docs {
   ks_url=$(curl -sL "https://raw.githubusercontent.com/fluxcd/flux2/${flux_version}/manifests/bases/${ctrl}/kustomization.yaml" | yq '.resources[]|select(. == "*crds.yaml*")')
   ctrl_version=$(echo "${ks_url}" | cut -d/ -f8)
 
-  if [ "${ctrl}" = "helm-controller" ] ; then
-    ctrl_version=main # REVERT BEFORE MERGING
-  fi
-
-  if [ "${ctrl}" = "kustomize-controller" ] ; then
-    ctrl_version=main # REVERT BEFORE MERGING
-  fi
-
-  if [ "${ctrl}" = "notification-controller" ] ; then
-    ctrl_version=main # REVERT BEFORE MERGING
-  fi
-
-  if [ "${ctrl_short%%-*}" = "image" ] ; then
-    ctrl_version=main # REVERT BEFORE MERGING
-  fi
-
   crds=$(curl -sL "${ks_url}" | yq ea '[[.metadata.name, .spec.versions[] | select(.storage == "true").name]]' -o csv)
   for api_version in $(all_versions "${crds}") ; do
     doc_url=https://raw.githubusercontent.com/fluxcd/${ctrl}/${ctrl_version}/docs/api/${api_version}/${ctrl_short}.md
