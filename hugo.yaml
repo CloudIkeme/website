@@ -95,15 +95,16 @@ params:
   # Enable Algolia DocSearch
   algolia_docsearch: true
   offlineSearch: false
-  version_menu: "Docs"
-  version: "Flux"
-  url_latest_version: /flux/
+  version_menu: "Versions"
+  version: "2.0"
+  archived_version: true
+  version_menu_pagelinks: true
+  url_latest_version: https://fluxcd.io/flux/
   versions:
-    # Add your release versions here
-    - version: Flux
-      url: /flux
-    - version: Flagger
-      url: /flagger
+    - version: "2.1"
+      url: https://fluxcd.io
+    - version: "2.0"
+      url: https://v2-0.docs.fluxcd.io
   logos:
     navbar: flux-horizontal-white.png
     hero: flux-horizontal-color.png
@@ -166,6 +167,9 @@ params:
 
 menus:
   main:
+  - name: Flagger
+    url: https://fluxcd.io/flagger
+    weight: 10
   - identifier: Project
     name: Project
     weight: 20
