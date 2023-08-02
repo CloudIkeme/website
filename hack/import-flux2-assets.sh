@@ -168,21 +168,21 @@ function gen_ctrl_docs {
     BRANCH=$(curl -sSfL "https://api.github.com/repos/fluxcd/website/pulls/$(echo ${BRANCH}|cut -d/ -f2)" | jq .base.ref -r)
   fi
 
-  VERSION_FLUX=
-  for tag in $(curl -u "$GITHUB_USER:$GITHUB_TOKEN" --retry 3 -sSfL "https://api.github.com/repos/fluxcd/flux2/releases" | jq .[].tag_name -r) ; do
-    if [ "${BRANCH}" = "main" ] ; then
-      VERSION_FLUX="${tag#v}"
-      break
-    fi
-    if [ "${tag%.*}" = "${BRANCH/-/.}" ] ; then
-      VERSION_FLUX="${tag#v}"
-      break
-    fi
+  page=1
+  while [ -z "${VERSION_FLUX:-}" ] ; do
+    tags=$(curl -u "${GITHUB_USER}:${GITHUB_TOKEN}" -sSfL "https://api.github.com/repos/fluxcd/flux2/releases?page=${page}" | jq .[].tag_name -r) || false
+    for tag in $tags ; do
+      if [ "${BRANCH}" = "main" ] ; then
+        VERSION_FLUX="${tag#v}"
+        break
+      fi
+      if [ "${tag%.*}" = "${BRANCH/-/.}" ] ; then
+        VERSION_FLUX="${tag#v}"
+        break
+      fi
+    done
+    ((page = page + 1))
   done
-
-  if [ -z "${VERSION_FLUX}" ] ; then
-    fatal "No Flux version found matching branch '${BRANCH}'"
-  fi
 
   curl -u "$GITHUB_USER:$GITHUB_TOKEN" -o "${TMP_BIN}" --retry 3 -sSfL "https://github.com/fluxcd/flux2/releases/download/v${VERSION_FLUX}/flux_${VERSION_FLUX}_${OS}_${ARCH}.tar.gz"
   tar xfz "${TMP_BIN}" -C "${TMP}"
